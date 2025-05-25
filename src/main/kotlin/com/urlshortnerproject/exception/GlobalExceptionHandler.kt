@@ -14,14 +14,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class GlobalExceptionHandler {
 
     @ExceptionHandler(UrlAlreadyExistsException::class)
-    fun handleUrlAlreadyExists(ex: UrlAlreadyExistsException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponse(ex.message ?: "URL already exists"))
-    }
+    fun handleUrlAlreadyExists(ex: UrlAlreadyExistsException) =
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponse(ex.message ?: "URL already exists"))
 
     @ExceptionHandler(IllegalArgumentException::class)
-    fun handleIllegalArgument(ex: IllegalArgumentException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(ex.message ?: "Not found"))
-    }
+    fun handleIllegalArgument(ex: IllegalArgumentException) =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(ex.message ?: "Not found"))
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleBadRequest(ex: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {

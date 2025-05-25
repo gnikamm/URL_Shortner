@@ -10,13 +10,10 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class UrlShortenerService(
-    private val repository: UrlMappingRepository
-) {
+class UrlShortenerService(private val repository: UrlMappingRepository) {
 
     fun shortenUrl(originalUrl: String, strategy: ShortenStrategy): String {
-        val existing = repository.findByOriginalUrl(originalUrl)
-        if (existing != null) {
+        repository.findByOriginalUrl(originalUrl)?.let {
             throw UrlAlreadyExistsException("URL already exists")
         }
 
@@ -29,12 +26,10 @@ class UrlShortenerService(
         return shortCode
     }
 
-    fun getOriginalUrl(shortCode: String): String? {
-        return repository.findByShortCode(shortCode)?.originalUrl
+    fun getOriginalUrl(shortCode: String): String =
+        repository.findByShortCode(shortCode)?.originalUrl
             ?: throw IllegalArgumentException("Invalid short code")
-    }
 
-    fun getAllMappings(): List<UrlMappingResponse> {
-        return repository.findAll().map { UrlMappingResponse(it.shortCode, it.originalUrl) }
-    }
+    fun getAllMappings(): List<UrlMappingResponse> =
+        repository.findAll().map { UrlMappingResponse(it.shortCode, it.originalUrl) }
 }
