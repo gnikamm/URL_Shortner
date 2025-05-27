@@ -32,4 +32,10 @@ class UrlShortenerService(private val repository: UrlMappingRepository) {
 
     fun getAllMappings(): List<UrlMappingResponse> =
         repository.findAll().map { UrlMappingResponse(it.shortCode, it.originalUrl) }
+
+    fun deleteUrl(shortCode: String) {
+        val entity = repository.findByShortCode(shortCode)
+            ?: throw IllegalArgumentException("Short code not found")
+        repository.delete(entity)
+    }
 }
