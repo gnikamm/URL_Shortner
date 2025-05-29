@@ -47,3 +47,18 @@ allOpen {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+tasks.register("initDb") {
+	group = "database"
+	description = "Initializes the database by running init.sql and starts the app"
+	doLast {
+		val isWindows = System.getProperty("os.name").startsWith("Windows")
+		if (isWindows) {
+			project.exec {
+				commandLine("cmd", "/c", "setup.bat")
+			}
+		} else {
+			println("Skipped: This task is intended for Windows. Use setup.sh manually on Unix systems.")
+		}
+	}
+}
