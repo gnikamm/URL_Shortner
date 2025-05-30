@@ -27,12 +27,14 @@ class UrlShortenerController(
 
     ) {
 
+    // Accepts a long URL and shortening strategy, returns a generated short code
     @PostMapping("/shorten-url")
     fun shorten(@RequestBody request: ShortenRequest) : ResponseEntity<ShortenResponse> {
         val code = service.shortenUrl(request.url, request.strategy)
         return ResponseEntity.ok(ShortenResponse(code))
     }
 
+    // Resolves the original URL for a given short code; returns 404 if not found
     @GetMapping("/original-url/{code}")
     fun resolve(@PathVariable code: String): ResponseEntity<ResolveResponse> {
         return try {
@@ -44,6 +46,7 @@ class UrlShortenerController(
         }
     }
 
+    // Returns all stored URL mappings; returns 404 if empty
     @GetMapping("/urls")
     fun getAllUrls(): ResponseEntity<Any> {
         val mappings = service.getAllMappings()
@@ -54,6 +57,7 @@ class UrlShortenerController(
         }
     }
 
+    // Deletes a URL mapping based on the short code; returns 404 if not found
     @DeleteMapping("/delete-url/{code}")
     fun delete(@PathVariable code: String): ResponseEntity<Map<String, String>> {
        return  try {

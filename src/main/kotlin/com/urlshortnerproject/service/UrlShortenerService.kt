@@ -26,6 +26,7 @@ class UrlShortenerService(
 
 ) {
 
+    // Creates a short code for a new URL using the selected strategy
     fun shortenUrl(originalUrl: String, strategy: ShortenStrategy): String {
         repository.findByOriginalUrl(originalUrl)?.let {
             throw UrlAlreadyExistsException(urlExistsMessage)
@@ -36,12 +37,14 @@ class UrlShortenerService(
         return shortCode
     }
 
+    // Returns the original URL for a given short code; throws if invalid
     fun getOriginalUrl(shortCode: String): String {
         val shortUrl = repository.findByShortCode(shortCode)
             ?: throw IllegalArgumentException(invalidShortCodeMessage)
         return shortUrl.originalUrl
     }
 
+    // Returns all URL mappings in the system
     fun getAllMappings(): List<UrlMappingResponse> {
         return repository.findAll().map {
             UrlMappingResponse(
@@ -51,12 +54,14 @@ class UrlShortenerService(
         }
     }
 
+    // Deletes a short code from the system; throws if not found
     fun deleteUrl(shortCode: String) {
         val shortUrl = repository.findByShortCode(shortCode)
             ?: throw IllegalArgumentException(shortCodeNotFoundMessage)
         repository.delete(shortUrl)
     }
 
+    // Strategy-based code generation; UUID vs timestamp-based Base62
     private fun generateShortCode(strategy: ShortenStrategy): String {
         return when (strategy) {
             ShortenStrategy.UUID -> UUID.randomUUID().toString().take(8)
